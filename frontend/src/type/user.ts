@@ -6,7 +6,7 @@ export type User = {
   imageUrl?: string;
 };
 
-export type creds = {
+export type Logincreds = {
   email: string;
   password: string;
 };
@@ -14,4 +14,5 @@ export type creds = {
 export type RegisterCreds = {
   email: string;
   password: string;
+  displayName: string;
 };

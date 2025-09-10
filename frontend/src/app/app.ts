@@ -3,7 +3,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Nav } from '../layout/nav/nav';
 import { AccountService } from '../core/services/account-service';
-import { HomePage } from "../features/home-page/home-page";
+import { HomePage } from '../features/home-page/home-page';
+import { User } from '../type/user';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { HomePage } from "../features/home-page/home-page";
 })
 export class App implements OnInit {
   protected readonly title = signal('frontend');
+  protected member = signal<User[]>([]);
   private http = inject(HttpClient);
   private accountService = inject(AccountService);
   setCurrentUser() {
