@@ -1,0 +1,60 @@
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using API.Dtos;
+using API.Entity;
+using Microsoft.CodeAnalysis.Emit;
+using Microsoft.EntityFrameworkCore;
+
+namespace API.Data;
+
+public class Seed
+{
+    public static async Task SeedUsers(AppDbContext context)
+    {
+        if (await context.Users.AnyAsync()) return;
+        
+        var memberData = await File.ReadAllTextAsync("C:\\.Net_Learning\\backend\\Data\\UserSeedData.json");
+        
+        var members = JsonSerializer.Deserialize<List<SeedUserDto>>(memberData);
+        if (members == null)
+        {
+            Console.WriteLine("No users found");
+            return;
+        }
+
+        foreach (var member in members)
+        {
+            using var hmac = new HMACSHA512();
+
+            var user = new appUser()
+            {
+                Id = member.Id,
+                Email = member.Email,
+                DisplayName = member.DisplayName,
+                ImageUrl = member.ImageUrl,
+                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$word")),
+                PasswordSalt = hmac.Key,
+                Member = new Member
+                {
+                    Id = member.Id,
+                    DisplayName = member.DisplayName,
+                    Description = member.Description,
+                    DateOfBirth = member.DateOfBirth,
+                    ImageUrl = member.ImageUrl,
+                    Gender = member.Gender,
+                    City = member.City,
+                    Country = member.Country,
+                    LastActive = member.LastActive,
+                }
+            };
+            user.Member.photos.Add(new Photo
+            {
+                Url = member.ImageUrl,
+                MemberId = member.Id,
+            });
+            context.Users.Add(user);
+        }
+        await context.SaveChangesAsync();
+    }
+}
