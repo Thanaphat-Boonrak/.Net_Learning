@@ -3,6 +3,7 @@ using System.Text;
 using API.Data;
 using API.Dtos;
 using API.Entity;
+using API.Extensions;
 using API.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,13 +27,7 @@ public class AccountController(AppDbContext context,JwtService jwtService): Base
         };
         context.Users.Add(user);
         await context.SaveChangesAsync();
-        return new userDto
-        {
-            Id =  user.Id,
-            DisplayName = user.DisplayName,
-            Email = user.Email,
-            Token = jwtService.CreateToken(user)
-        };
+        return user.ToDto(jwtService);
     }
 
     [HttpPost("login")]
@@ -49,13 +44,7 @@ public class AccountController(AppDbContext context,JwtService jwtService): Base
         if (!computedHash.SequenceEqual(user.PasswordHash))
             return Unauthorized();
 
-        return new userDto
-        {
-            Id =  user.Id,
-            DisplayName = user.DisplayName,
-            Email = user.Email,
-            Token = jwtService.CreateToken(user)
-        };
+        return user.ToDto(jwtService);
     }
 
     private async Task<bool> EmailExists(string email)

@@ -11,6 +11,11 @@ public class ImplMemberRepository(AppDbContext context): MemberRepository
          context.Entry(member).State = EntityState.Modified;
     }
 
+    public async Task<Member> GetMemberForUpdateAsync(string memberId)
+    {
+        return await context.Members.Include(m => m.User).SingleOrDefaultAsync(m => m.Id == memberId);
+    }
+
     public async Task<bool> SaveAllAsync()
     {
         return await context.SaveChangesAsync() > 0;

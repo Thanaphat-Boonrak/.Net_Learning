@@ -1,6 +1,11 @@
-﻿namespace API.Extensions;
+﻿using System.Security.Claims;
 
-public class ClaimsPrinciple
+namespace API.Extensions;
+
+public static class ClaimsPrinciple
 {
-    
+    public static string getMemberId(this ClaimsPrincipal user)
+    {
+        return user.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("Cannot get member id from claims");
+    }
 }

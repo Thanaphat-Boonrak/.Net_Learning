@@ -34,9 +34,9 @@ var app = builder.Build();
 
 
 app.UseMiddleware<ExceptionMiddleWare>();
+app.UseCors(cors => cors.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:4200"));
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(cors => cors.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:4200"));
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();
