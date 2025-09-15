@@ -5,6 +5,7 @@ import { Nav } from '../layout/nav/nav';
 import { AccountService } from '../core/services/account-service';
 import { HomePage } from '../features/home-page/home-page';
 import { User } from '../type/user';
+import { Busy } from '../core/services/busy';
 
 @Component({
   selector: 'app-root',
@@ -15,4 +16,5 @@ import { User } from '../type/user';
 })
 export class App {
   protected router = inject(Router);
+  protected busyService = inject(Busy);
 }

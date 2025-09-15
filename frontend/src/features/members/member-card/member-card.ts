@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { Member } from '../../../type/members';
 import { RouterLink } from '@angular/router';
-import { AgePipe } from "../../../core/pipes/age-pipe";
+import { AgePipe } from '../../../core/pipes/age-pipe';
 
 @Component({
   selector: 'app-member-card',

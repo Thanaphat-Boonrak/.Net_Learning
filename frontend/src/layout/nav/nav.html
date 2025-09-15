@@ -38,8 +38,9 @@
       <a routerLink="/messages" routerLinkActive="text-accent">Messages</a>
       <a routerLink="/errors" routerLinkActive="text-accent">Errors</a>
     </nav>
-
-    }
+    @if (busyService.busyRequest() > 0) {
+    <span class="loading loading-spinner text-accent"></span>
+    } }
     <div class="flex align-middle ml-auto gap-3">
       <div class="dropdown mr-5 dropdown-end">
         <div
@@ -74,7 +75,7 @@
         </ul>
       </div>
       @if (accountService.currentUser()) {
-      <div class="dropdown">
+      <div class="dropdown dropdown-left">
         <div
           tabindex="0"
           role="button"
@@ -91,7 +92,11 @@
           tabindex="0"
           class="dropdown-content dropdown-end menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
         >
-          <li><a>Edit Profile</a></li>
+          <li>
+            <a routerLink="/members/{{ accountService.currentUser()?.id }}"
+              >Edit Profile</a
+            >
+          </li>
           <li><a (click)="logout()">Logout</a></li>
         </ul>
       </div>

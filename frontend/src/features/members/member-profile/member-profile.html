@@ -1,4 +1,4 @@
-@if (member(); as member) {
+@if (this.memberService.member(); as member) {
 <div class="flex flex-col gap-3">
   <div class="flex gap-3">
     <span class="font-semibold">
@@ -10,9 +10,60 @@
       Last Active: {{ member.lastActive | date : "d MMM yyyy h:mm a" }}
     </span>
   </div>
+
+  @if(memberService.editMode()){
+  <div class="divider"></div>
+  <form
+    #editForm="ngForm"
+    (ngSubmit)="updateMember()"
+    class="flex flex-col w-full gap-4"
+  >
+    <label class="floating-label">
+      <span>Display Name</span>
+      <input
+        class="input w-full"
+        name="displayName"
+        [(ngModel)]="editMember.displayName"
+        placeholder="Display Name"
+      />
+    </label>
+    <label class="floating-label">
+      <span>Description</span>
+      <textarea
+        class="textarea w-full"
+        name="description"
+        [(ngModel)]="editMember.description"
+        placeholder="Description"
+      ></textarea>
+    </label>
+    <label class="floating-label">
+      <span>City</span>
+      <input
+        class="input w-full"
+        name="city"
+        [(ngModel)]="editMember.city"
+        placeholder="city"
+      />
+    </label>
+    <label class="floating-label">
+      <span>country</span>
+      <input
+        class="input w-full"
+        name="country"
+        [(ngModel)]="editMember.country"
+        placeholder="Country"
+      />
+    </label>
+    <div class="flex self-end">
+      <button type="submit" class="btn btn-primary4">Submit</button>
+    </div>
+  </form>
+  }@else {
   <h3 class="text-lg font-semibold text-primary">
     About {{ member.displayName }}
   </h3>
   <div>{{ member.description }}</div>
+
+  }
 </div>
 }

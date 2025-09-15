@@ -13,13 +13,16 @@ import { lastValueFrom } from 'rxjs';
 import { Init } from '../core/services/init';
 import { errorInterceptor } from '../core/interceptors/error-interceptor';
 import { authInterceptor } from '../core/interceptors/auth-interceptor';
+import { loadingInterceptor } from '../core/interceptors/loading-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withViewTransitions()),
-    provideHttpClient(withInterceptors([errorInterceptor, authInterceptor])),
+    provideHttpClient(
+      withInterceptors([errorInterceptor, authInterceptor, loadingInterceptor])
+    ),
     provideAppInitializer(async () => {
       const initService = inject(Init);
 

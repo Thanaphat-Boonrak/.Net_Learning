@@ -18,8 +18,6 @@ export class MemberPhoto {
   constructor() {
     const id = this.route.parent?.snapshot.paramMap.get('id');
     if (id) {
-      console.log(id);
-
       this.photos$ = this.memberService.getMemberPhoto(id);
     }
   }
