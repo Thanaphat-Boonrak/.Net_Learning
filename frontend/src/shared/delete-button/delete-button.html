@@ -1,0 +1,21 @@
+<button
+  class="absolute top-1 left-1 z-50 cursor-pointer"
+  (click)="onClick()"
+  [disabled]="disable()"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="size-6 text-error"
+    [class.opacity-25]="disable()"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+    />
+  </svg>
+</button>

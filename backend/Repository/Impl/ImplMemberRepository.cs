@@ -13,7 +13,7 @@ public class ImplMemberRepository(AppDbContext context): MemberRepository
 
     public async Task<Member> GetMemberForUpdateAsync(string memberId)
     {
-        return await context.Members.Include(m => m.User).SingleOrDefaultAsync(m => m.Id == memberId);
+        return await context.Members.Include(m => m.User).Include(p => p.photos).SingleOrDefaultAsync(m => m.Id == memberId);
     }
 
     public async Task<bool> SaveAllAsync()

@@ -1,5 +1,6 @@
 using System.Text;
 using API.Data;
+using API.Helps;
 using API.Middleware;
 using API.Repository;
 using API.Service;
@@ -15,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<JwtService, JwtServiceImpl>();
 builder.Services.AddScoped<MemberRepository, ImplMemberRepository>();
+builder.Services.AddScoped<PhotoService, PhotoServiceImpl>();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer((opt) =>
 {
     var token = builder.Configuration["TokenKey"] ?? throw new ArgumentNullException("TokensKey");

@@ -36,7 +36,8 @@
   <div class="card bg-base-100 w-3/4 p-6">
     <div class="flex justify-between items-center">
       <h3 class="card-title text-3xl text-primary">{{ title.getTitle() }}</h3>
-      @if (this.memberService.member() && title.getTitle() === "Profile") {
+      @if (this.memberService.member()?.displayName ===
+      this.accountService.currentUser()?.displayName) {
       <button
         class="btn btn-outline btn-primary"
         (click)="memberService.editMode.set(!memberService.editMode())"
@@ -46,7 +47,7 @@
       }
     </div>
     <div class="divider"></div>
-    <div>
+    <div >
       <router-outlet />
     </div>
   </div>

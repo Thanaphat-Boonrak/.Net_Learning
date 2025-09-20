@@ -23,7 +23,7 @@ import { AccountService } from '../../../core/services/account-service';
 })
 export class MemberDetail implements OnInit {
   protected memberService = inject(MemberService);
-  private accountService = inject(AccountService);
+  protected accountService = inject(AccountService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   protected member = signal<Member | undefined>(undefined);
