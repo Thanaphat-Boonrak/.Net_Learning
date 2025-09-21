@@ -41,9 +41,12 @@ export class MemberPhoto implements OnInit, OnDestroy {
         this.memberService.editMode.set(false);
         this.isLoading.set(false);
         this.photos.update((photo) => [...photo, res]);
+        if (this.memberService.member()?.imageUrl === null) {
+          this.SetmainPhotoLocal(res);
+        }
       },
       error: (err) => {
-        console.log('errro Upload image', err);
+        console.log('errror Upload image', err);
 
         this.isLoading.set(false);
       },
@@ -73,5 +76,18 @@ export class MemberPhoto implements OnInit, OnDestroy {
         this.photos.update((photos) => photos.filter((p) => p.id !== photoId));
       },
     });
+  }
+
+  private SetmainPhotoLocal(photo: Photo) {
+    const currentUser = this.accountService.currentUser();
+    if (currentUser) currentUser.imageUrl = photo.url;
+    this.accountService.setCurrentUser(currentUser as User);
+    this.memberService.member.update(
+      (member) =>
+        ({
+          ...member,
+          imageUrl: photo.url,
+        } as Member)
+    );
   }
 }

@@ -4,6 +4,7 @@ import { User } from '../../type/user';
 import { environment } from '../../environments/environment.development';
 import { EditMember, Member, Photo } from '../../type/members';
 import { tap } from 'rxjs';
+import { AccountService } from './account-service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,7 @@ import { tap } from 'rxjs';
 export class MemberService {
   private http = inject(HttpClient);
   editMode = signal<boolean>(false);
+  private accountService = inject(AccountService);
   private baseUrl = environment.apiUrl;
   member = signal<Member | null>(null);
 
@@ -47,7 +49,7 @@ export class MemberService {
     );
   }
 
-  deletePhoto(photoId: number){
-    return this.http.delete(this.baseUrl + 'members/delete-photo/' + photoId)
+  deletePhoto(photoId: number) {
+    return this.http.delete(this.baseUrl + 'members/delete-photo/' + photoId);
   }
 }
