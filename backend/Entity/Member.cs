@@ -24,6 +24,10 @@ public class Member
     public required string City { get; set; }
     
     public required string Country { get; set; }
+
+    [JsonIgnore] public List<MemberLike> LikeByMembers { get; set; } = [];
+
+    [JsonIgnore] public List<MemberLike> LikeMember { get; set; } = [];
     
     [JsonIgnore]
     public List<Photo>? photos { get; set; } = [];

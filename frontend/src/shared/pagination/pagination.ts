@@ -11,11 +11,12 @@ export class Pagination {
   pageSize = model(10);
   totalCount = input(0);
   pageSizeOption = input([5, 10, 20, 30, 40, 50]);
-
+  totalPage = input(0);
   pageChange = output<{ pageNumber: number; pageSize: number }>();
   lastItemIndex = computed(() => {
     return Math.min(this.pageNumber() * this.pageSize(), this.totalCount());
   });
+
   onPageChange(newPage?: number, pageSize?: EventTarget | null) {
     if (newPage) this.pageNumber.set(newPage);
     if (pageSize) {

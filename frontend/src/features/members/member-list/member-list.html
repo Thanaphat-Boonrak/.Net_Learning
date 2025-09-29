@@ -1,8 +1,42 @@
-@if (paginatedMember$ | async; as paginatedResult) { @if (paginatedResult.items;
-as members) {
-<div class="grid grid-cols-5 gap-6">
-  @for (member of members; track member.id) {
-  <app-member-card [members]="member" />
+@if (paginatedMember(); as paginatedResult) {
+<div class="flex flex-col w-full">
+  <div class="flex justify-between items-center">
+    <div class="flex gap-3">
+      <button (click)="open()" class="btn btn-primary">Select Filters</button>
+      <button (click)="resetFilter()" class="btn btn-neutral">
+        Reset Filters
+      </button>
+      <div
+        class="text-lg bg-base-100 py-2 px-4 border-red-100 rounded-lg text-primary capitalized"
+      >
+        {{ displayMessage }}
+      </div>
+    </div>
+    @if (paginatedResult.metaData; as metadata) {
+
+    <app-pagination
+      [pageNumber]="metadata.currentPage"
+      [totalCount]="metadata.totalCount"
+      [pageSize]="metadata.pageSize"
+      [totalPage]="metadata.totalPages"
+      (pageChange)="onPageChange($event)"
+    />
+    }
+  </div>
+  @if (paginatedResult.items; as members) {
+  <div class="grid grid-cols-5 gap-6">
+    @for (member of members; track member.id) {
+    <app-member-card [members]="member" />
+    }
+  </div>
   }
 </div>
-} }
+
+}
+
+<app-filter-modal
+  #filterModal
+  [hidden]="!paginatedMember()"
+  (closeModal)="onClose()"
+  (submitData)="onFilterChange($event)"
+/>

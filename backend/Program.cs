@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<JwtService, JwtServiceImpl>();
 builder.Services.AddScoped<MemberRepository, ImplMemberRepository>();
+builder.Services.AddScoped<LogsUserActivity>();
 builder.Services.AddScoped<PhotoService, PhotoServiceImpl>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer((opt) =>

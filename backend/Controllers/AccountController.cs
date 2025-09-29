@@ -23,7 +23,15 @@ public class AccountController(AppDbContext context,JwtService jwtService): Base
             Email = register.Email,
             DisplayName = register.DisplayName,
             PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(register.Password)),
-            PasswordSalt = hmac.Key
+            PasswordSalt = hmac.Key,
+            Member = new Member
+            {
+                DisplayName = register.DisplayName,
+                DateOfBirth = register.DateofBirth,
+                Gender = register.Gender,
+                Country = register.Country,
+                City = register.City,
+            }
         };
         context.Users.Add(user);
         await context.SaveChangesAsync();
