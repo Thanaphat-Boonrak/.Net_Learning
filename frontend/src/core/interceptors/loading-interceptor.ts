@@ -4,6 +4,8 @@ import { Busy } from '../services/busy';
 import { delay, finalize, of, tap } from 'rxjs';
 const cache = new Map<string, any>();
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
+
+  
   const generateChacheKey = (request: string, param: HttpParams) => {
     const paramString = param
       .keys()
@@ -12,8 +14,21 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     return paramString ? `${request}?${paramString}` : request;
   };
 
+  const invalidateCache = (urlPattern: string) => {
+    for (const key of cache.keys()) {
+      if (key.includes(urlPattern)) {
+        cache.delete(key);
+        console.log(`Cache invalidated for: ${key}`);
+      }
+    }
+  };
+
   const cacheKey = generateChacheKey(req.url, req.params);
   const busyService = inject(Busy);
+
+  if (req.method.includes('POST') && req.url.includes('/likes')) {
+    invalidateCache('/likes');
+  }
 
   if (req.method === 'GET') {
     const cachedResponse = cache.get(cacheKey);
@@ -28,6 +43,8 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     delay(500),
     tap((res) => cache.set(cacheKey, res)),
     finalize(() => {
+      console.log(cache);
+
       busyService.idle();
     })
   );

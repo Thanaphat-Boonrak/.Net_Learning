@@ -17,6 +17,8 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<JwtService, JwtServiceImpl>();
 builder.Services.AddScoped<MemberRepository, ImplMemberRepository>();
 builder.Services.AddScoped<LogsUserActivity>();
+builder.Services.AddScoped<LikeRepository, ImplLikeRepository>();
+builder.Services.AddScoped<MessageRepository, ImplMessageRespository>();
 builder.Services.AddScoped<PhotoService, PhotoServiceImpl>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer((opt) =>
@@ -48,12 +50,13 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<AppDbContext>();
-    await context.Database.MigrateAsync();     
-    await Seed.SeedUsers(context);             
+    await context.Database.MigrateAsync();
+    await Seed.SeedUsers(context);
 }
 catch (Exception ex)
 {
     var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "An error occured during migration");
 }
+
 app.Run();

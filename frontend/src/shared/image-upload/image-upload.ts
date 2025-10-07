@@ -13,21 +13,19 @@ export class ImageUpload {
   uploadFile = output<File>();
   loading = input<boolean>(false);
 
+
   onDragEvent(event: DragEvent) {
     event.preventDefault();
-    event.stopPropagation();
     this.isDragging = true;
   }
 
   onDragLeave(event: DragEvent) {
     event.preventDefault();
-    event.stopPropagation();
     this.isDragging = false;
   }
 
   onDropEvent(event: DragEvent) {
     event.preventDefault();
-    event.stopPropagation();
     this.isDragging = true;
     if (event.dataTransfer?.files.length) {
       const file = event.dataTransfer.files[0];

@@ -1,1 +1,36 @@
-<p>lists works!</p>
+@if (paginatedMember(); as paginatedResult) { 
+<div class="flex justify-between items-center">
+  
+  <div class="tabs tabs-box tabs-lg text-primary w-fit h-fit">
+    @for (tab of tabs; track $index) {
+    <button
+      role="tab"
+      class="tab"
+      [class.tab-active]="predicate().predicate === tab.value"
+      (click)="setpredicate(tab.value)"
+    >
+      {{ tab.label }}
+    </button>
+    }
+  </div>
+
+  @if (paginatedResult.metaData) {
+  <app-pagination
+    [pageNumber]="paginatedResult.metaData.currentPage"
+    [totalCount]="paginatedResult.metaData.totalCount"
+    [pageSize]="paginatedResult.metaData.pageSize"
+    [totalPage]="paginatedResult.metaData.totalPages"
+    (pageChange)="onPageChange($event)"
+  />
+  }
+</div>
+
+@if (paginatedResult.items && paginatedResult.items.length > 0) {
+<div class="grid grid-cols-5 gap-6 mt-3">
+  @for (member of paginatedResult.items; track member.id) {
+  <app-member-card [members]="member" />
+  }
+</div>
+} @else {
+<p class="text-center text-gray-400 mt-4">No members found.</p>
+} }
