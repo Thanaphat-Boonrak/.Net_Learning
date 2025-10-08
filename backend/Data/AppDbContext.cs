@@ -14,14 +14,16 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<Photo> Photos { get; set; }
 
     public DbSet<MemberLike> Likes { get; set; }
-    
+
     public DbSet<Message> Messages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<Message>().HasOne(m => m.Recipient).WithMany(m => m.MembersRecive).OnDelete(DeleteBehavior.Restrict);
-        modelBuilder.Entity<Message>().HasOne(x => x.Sender).WithMany(x => x.MessagesSent).OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Message>().HasOne(m => m.Recipient).WithMany(m => m.MembersRecive)
+            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Message>().HasOne(x => x.Sender).WithMany(x => x.MessagesSent)
+            .OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<MemberLike>().HasKey(x => new { x.SourceMemberId, x.TargetMemberId });
         modelBuilder.Entity<MemberLike>().HasOne(s => s.SourceMember).WithMany(t => t.LikeMember)
             .HasForeignKey(s => s.SourceMemberId).OnDelete(DeleteBehavior.Cascade);
@@ -30,6 +32,11 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         var dataTimeConverter = new ValueConverter<DateTime, DateTime>(time => time.ToUniversalTime(),
             time => DateTime.SpecifyKind(time, DateTimeKind.Utc));
 
+        var nullableDataTimeConverter = new ValueConverter<DateTime?, DateTime?>(
+            time => time.HasValue ? time.Value.ToUniversalTime() : null,
+            time => time.HasValue ? DateTime.SpecifyKind(time.Value, DateTimeKind.Utc) : null);
+
+
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             foreach (var property in entityType.GetProperties())
@@ -37,6 +44,10 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
                 if (property.ClrType == typeof(DateTime))
                 {
                     property.SetValueConverter(dataTimeConverter);
+                }
+                else if (property.ClrType == typeof(DateTime?))
+                {
+                    property.SetValueConverter(nullableDataTimeConverter);
                 }
             }
         }

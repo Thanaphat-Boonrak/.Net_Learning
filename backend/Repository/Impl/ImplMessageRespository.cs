@@ -3,6 +3,7 @@ using API.Dtos;
 using API.Entity;
 using API.Extensions;
 using API.Helps;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository;
 
@@ -10,7 +11,7 @@ public class ImplMessageRespository(AppDbContext context) : MessageRepository
 {
     public void AddMessage(Message message)
     {
-         context.Messages.Add(message);
+        context.Messages.Add(message);
     }
 
     public void DeleteMessage(Message message)
@@ -20,9 +21,8 @@ public class ImplMessageRespository(AppDbContext context) : MessageRepository
 
     public async Task<Message?> GetMessage(string messageId)
     {
-       return await context.Messages.FindAsync(messageId);
+        return await context.Messages.FindAsync(messageId);
     }
-
 
 
     public async Task<PaginatedResult<MessageDto>> GetMessagesForMember(MessageParam messageParam)
@@ -35,12 +35,18 @@ public class ImplMessageRespository(AppDbContext context) : MessageRepository
         };
 
         var messageQuery = query.Select(Extensions.MessageExtensions.ToDtoProjection());
-        return await PaginationHelp.CreateAsync(messageQuery,messageParam.PageNumber, messageParam.PageSize);
+        return await PaginationHelp.CreateAsync(messageQuery, messageParam.PageNumber, messageParam.PageSize);
     }
 
-    public Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string recipientId)
+    public async Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string recipientId)
     {
-        throw new NotImplementedException();
+        await context.Messages.Where(x =>
+                x.RecipientId == currentMemberId && x.SenderId == recipientId && x.DateRead == null)
+            .ExecuteUpdateAsync(setter => setter.SetProperty(x => x.DateRead, DateTime.UtcNow));
+
+        return await context.Messages
+            .Where(x => (x.RecipientId == currentMemberId && x.SenderId == recipientId) || (x.SenderId == currentMemberId && x.RecipientId == recipientId))
+            .OrderBy(x => x.MessageSent).Select(Extensions.MessageExtensions.ToDtoProjection()).ToListAsync();
     }
 
     public async Task<bool> SaveAllAsync()

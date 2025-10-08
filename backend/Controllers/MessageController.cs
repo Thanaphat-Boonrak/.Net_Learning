@@ -7,15 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class MessageController(MemberRepository memberRepository,MessageRepository messageRepository) : BaseApiController
+public class MessageController(MemberRepository memberRepository, MessageRepository messageRepository)
+    : BaseApiController
 {
     [HttpPost]
     public async Task<ActionResult<MessageDto>> AddMessage(CreateMessageDto createMessageDto)
     {
         var sender = await memberRepository.GetMemberByIdAsync(User.getMemberId());
         var recipent = await memberRepository.GetMemberByIdAsync(createMessageDto.RecipientId);
-        
-        if (recipent == null || sender == null || sender.Id == createMessageDto.RecipientId) return BadRequest("Cannot Send This Message");
+
+        if (recipent == null || sender == null || sender.Id == createMessageDto.RecipientId)
+            return BadRequest("Cannot Send This Message");
 
         var message = new Message()
         {
@@ -25,7 +27,7 @@ public class MessageController(MemberRepository memberRepository,MessageReposito
         };
         messageRepository.AddMessage(message);
         if (await messageRepository.SaveAllAsync()) return message.ToDto();
-        
+
         return BadRequest("Cannot Send This Message");
     }
 
@@ -35,5 +37,11 @@ public class MessageController(MemberRepository memberRepository,MessageReposito
     {
         messageParam.MemberId = User.getMemberId();
         return await messageRepository.GetMessagesForMember(messageParam);
-    } 
+    }
+
+    [HttpGet("thread/{recipientId}")]
+    public async Task<ActionResult<IReadOnlyList<MessageDto>>> GetMessageByRecipient(string recipientId)
+    {
+        return  Ok(await messageRepository.GetMessageThread(User.getMemberId(), recipientId));
+    }
 }
